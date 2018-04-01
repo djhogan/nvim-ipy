@@ -11,8 +11,7 @@ class Main:
     
     @neovim.function('IPyStart')
     def launch_instance(self, args):
-        print('Starting IPy pllugin.')
-        # self.ipy = ZMQVimIPythonApp.launch_instance()
+        self.ipy = ZMQVimIPythonApp.launch_instance()
 
     @neovim.function('IPyRun')
     def run_cell(self, args):
