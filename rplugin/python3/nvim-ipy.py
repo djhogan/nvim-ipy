@@ -11,7 +11,8 @@ class Main:
     
     @neovim.function('IPyStart')
     def launch_instance(self, args):
-        self.ipy = ZMQVimIPythonApp.launch_instance()
+        print('Starting IPy pllugin.')
+        # self.ipy = ZMQVimIPythonApp.launch_instance()
 
     @neovim.function('IPyRun')
     def run_cell(self, args):
@@ -110,3 +111,6 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
 
     def handle_text_output(text):
         self.vim.command(f'new | call setline(".", "{text}")')
+
+if __name__ == '__main__':
+    ZMQVimIPythonApp.launch_instance()
