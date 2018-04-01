@@ -3,6 +3,7 @@ import time
 import neovim
 from jupyter_core.application import JupyterApp
 from jupyter_client.consoleapp import JupyterConsoleApp
+from jupyter_client.threaded import ThreadedKernelClient
 
 @neovim.plugin
 class Main:
@@ -21,6 +22,7 @@ class Main:
 class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
     name = 'jupyter-vim'
     version = '1.0'
+    kernel_client_class = ThreadedKernelClient
 
     def initialize(self, argv=None):
         super(ZMQVimIPythonApp, self).initialize(argv)
