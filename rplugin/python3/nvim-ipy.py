@@ -9,7 +9,7 @@ class Main:
     def __init__(self, vim):
         self.vim = vim
     
-    @neovim.function('IPyStart')
+    @neovim.function('IPyStart', sync=False)
     def launch_instance(self, args):
         self.ipy = ZMQVimIPythonApp.launch_instance()
 
