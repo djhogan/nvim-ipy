@@ -12,7 +12,9 @@ class Main:
     
     @neovim.function('IPyStart', sync=False)
     def launch_instance(self, args):
-        self.ipy = ZMQVimIPythonApp.launch_instance()
+        self.ipy = ZMQVimIPythonApp()
+        self.ipy.initialize()
+        self.ipy.start()
 
     @neovim.function('IPyRun')
     def run_cell(self, args):
