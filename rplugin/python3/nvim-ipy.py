@@ -60,7 +60,7 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
             content = req['content']
 
     def handle_execute_reply(self, msg_id, timeout=0.1):
-        msg = self.kernel_client.shell_channel.get_msg(block=False, timeout=timeout)
+        msg = self.kernel_client.shell_channel.get_msg(block=False, timeout)
         if msg['parent_header'].get('msg_id', None) == msg_id:
             self.handle_iopub()  # XXX why is this here?
             content = msg['content']
