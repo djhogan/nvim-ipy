@@ -5,7 +5,7 @@ from jupyter_core.application import JupyterApp
 from jupyter_client.consoleapp import JupyterConsoleApp
 
 @neovim.plugin
-class ZMQVimIPythonPlugin:
+class Main:
     def __init__(self, vim):
         self.vim = vim
     
