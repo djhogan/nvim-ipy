@@ -32,7 +32,6 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
     def start(self):
         super(ZMQVimIPythonApp, self).start()
         print("Start called..")
-        import pdb; pdb.set_trace()
 
     def run_cell(self, cell):
         # TODO flush stale replies
