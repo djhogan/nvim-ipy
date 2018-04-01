@@ -10,11 +10,11 @@ class Main:
         self.vim = vim
     
     @neovim.function('IPyStart')
-    def launch_instance():
+    def launch_instance(self, args):
         self.ipy = ZMQVimIPythonApp.launch_instance()
 
     @neovim.function('IPyRun')
-    def run_cell():
+    def run_cell(self, args):
         line = self.vim.eval('getline(".")')
         self.ipy.run_cell(line)
 
