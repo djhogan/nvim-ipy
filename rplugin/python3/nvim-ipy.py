@@ -32,7 +32,7 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
     # kernel_client_class = ThreadedKernelClient
 
     def initialize(self, out):
-        super(ZMQVimIPythonApp, self).initialize(argv)
+        super(ZMQVimIPythonApp, self).initialize(None)
         JupyterConsoleApp.initialize(self) # XXX why do we call it again?
         self.out = out
 
