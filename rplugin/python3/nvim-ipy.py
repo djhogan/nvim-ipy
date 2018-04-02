@@ -1,6 +1,7 @@
 import sys
 import time
 import neovim
+from queue import Empty
 from jupyter_core.application import JupyterApp
 from jupyter_client.consoleapp import JupyterConsoleApp
 from jupyter_client.threaded import ThreadedKernelClient
@@ -77,7 +78,7 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
             elif status == 'error':
                 raise RuntimeError('Waiting for shell channel reply, received error reply.')
         else:
-            raise RuntimeError('Waiting for shell channel reply, but received unrelated message.')
+            raise RuntimeError(f'Waiting for shell channel reply, but received unrelated message: {msg}.')
 
     def handle_iopub(self, msg_id=''):
         while self.kernel_client.iopub_channel.msg_ready():
