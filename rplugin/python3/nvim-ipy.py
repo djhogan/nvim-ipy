@@ -23,8 +23,8 @@ class Main:
         self.ipy.run_cell(line)
 
     def write(self, text):
-        self.vim.command(f'new | call setline(".", "{text}")')
-
+        self.vim.command('new')
+        self.vim.current.buffer.append(text)
 
 class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
     name = 'jupyter-vim'
