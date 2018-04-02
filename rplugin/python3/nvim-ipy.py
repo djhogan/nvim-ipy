@@ -27,7 +27,7 @@ class Main:
         self.ipy.run_cell(line)
 
     def write(self, text):
-        self.buf[:] = text.split('\n')
+        self.buf.append(text.split('\n'))
 
 class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
     name = 'jupyter-vim'
