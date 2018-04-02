@@ -16,6 +16,8 @@ class Main:
         # create special buffer
         self.vim.command('new')
         self.buf = self.vim.current.buffer
+        self.vim.command('new')
+        self.dbuf = self.vim.current.buffer
         # start ipython
         self.ipy = ZMQVimIPythonApp()
         self.ipy.initialize(self)
@@ -38,6 +40,7 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
         super(ZMQVimIPythonApp, self).initialize(None)
         JupyterConsoleApp.initialize(self) # XXX why do we call it again?
         self.out = out
+        self.err = out
 
     def start(self):
         super(ZMQVimIPythonApp, self).start()
@@ -105,7 +108,7 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
             msg_type = sub_msg['header']['msg_type']
             parent = sub_msg['parent_header']
 
-            self.out.write(f"{sub_msg}")  # DEBUG
+            self.err.write(f"{sub_msg}")  # DEBUG
             if True: # check if from here
                 if msg_type == 'status':
                     self._execution_state = sub_msg['content']['execution_state']
@@ -115,16 +118,20 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
                     self.out.write(sub_msg['content']['data']['text/plain'])
                     # TODO handle other data types.
                 elif msg_type == 'data_pub':
-                    pass # TODO raw data
+                    raise NotImplementedError('Unhandled data_pub.')
                 elif msg_type == 'execute_result':
                     self.out.write(sub_msg['content']['data']['text/plain'])
                     # TODO
                 elif msg_type == 'execute_input':
                     self.out.write(sub_msg['content']['code'] + '\n')
                 elif msg_type == 'clear_output':
-                    pass # TODO used for clearing output. Useful for animations.
+                    raise NotImplementedError('Unhandled clear_output.')
+                    # TODO used for clearing output. Useful for animations.
                 elif msg_type == 'error':
-                    self.out.write(sub_msg)
+                    self.out.write(f"{sub_msg}")
+                else:
+                    raise NotImplementedError(f'Unhandled iopub message with type {msg_type}.')
+
 
     def handle_stdin(self, msg_id=''):
         raise NotImplementedError()
