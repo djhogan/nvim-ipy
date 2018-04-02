@@ -34,7 +34,19 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
 
     def start(self):
         super(ZMQVimIPythonApp, self).start()
-        print("Start called..")
+        tic = time.time()
+        # XXX self.kernel_client.hb_channel.unpause()
+        msg_id = self.kernel_client.kernel_info()
+        while True:
+            try:
+                reply = self.kernel_client.get_shell_msg(timeout=1.0)
+            except Empty:
+                if (time.time() - tic) > 5.0:
+                    raise RuntimeError("Kernel didn't respond to kernel_info request.")
+            else:
+                if reply['parent_header'].get('msg_id') == msg_id:
+                    self.kernel_info = reply['content']
+                    return
 
     def run_cell(self, cell):
         # TODO flush stale replies
