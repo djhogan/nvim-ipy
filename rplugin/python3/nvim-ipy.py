@@ -24,7 +24,7 @@ class Main:
 class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
     name = 'jupyter-vim'
     version = '1.0'
-    kernel_client_class = ThreadedKernelClient
+    # kernel_client_class = ThreadedKernelClient
 
     def initialize(self, argv=None):
         super(ZMQVimIPythonApp, self).initialize(argv)
