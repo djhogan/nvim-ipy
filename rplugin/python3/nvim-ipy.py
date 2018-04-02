@@ -36,7 +36,7 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
 
     def initialize(self, out):
         super(ZMQVimIPythonApp, self).initialize(None)
-        # JupyterConsoleApp.initialize(self) # XXX why do we call it again?
+        JupyterConsoleApp.initialize(self) # XXX why do we call it again?
         self.out = out
 
     def start(self):
