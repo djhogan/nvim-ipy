@@ -24,7 +24,7 @@ class Main:
 
     def write(self, text):
         self.vim.command('new')
-        self.vim.current.buffer.append(text)
+        self.vim.current.buffer.append(text.split('\n'))
 
 class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
     name = 'jupyter-vim'
