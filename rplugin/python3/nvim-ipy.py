@@ -31,6 +31,9 @@ class Main:
     def write(self, text):
         self.buf.append(text.split('\n'))
 
+    def debug(self, text):
+        self.dbuf.append(text.split('\n'))
+
 class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
     name = 'jupyter-vim'
     version = '1.0'
@@ -40,7 +43,6 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
         super(ZMQVimIPythonApp, self).initialize(None)
         JupyterConsoleApp.initialize(self) # XXX why do we call it again?
         self.out = out
-        self.err = out
 
     def start(self):
         super(ZMQVimIPythonApp, self).start()
@@ -108,7 +110,7 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
             msg_type = sub_msg['header']['msg_type']
             parent = sub_msg['parent_header']
 
-            self.err.write(f"{sub_msg}")  # DEBUG
+            self.out.debug(f"{sub_msg}")  # DEBUG
             if True: # check if from here
                 if msg_type == 'status':
                     self._execution_state = sub_msg['content']['execution_state']
