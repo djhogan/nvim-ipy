@@ -13,6 +13,10 @@ class Main:
 
     @neovim.function('IPyStart', sync=False)
     def launch_instance(self, args):
+        # create special buffer
+        self.vim.command('new')
+        self.buf = self.vim.current.buffer
+        # start ipython
         self.ipy = ZMQVimIPythonApp()
         self.ipy.initialize(self)
         self.ipy.start()
@@ -23,8 +27,7 @@ class Main:
         self.ipy.run_cell(line)
 
     def write(self, text):
-        self.vim.command('new')
-        self.vim.current.buffer.append(text.split('\n'))
+        self.buf[:] = text.split('\n')
 
 class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
     name = 'jupyter-vim'
@@ -33,7 +36,7 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
 
     def initialize(self, out):
         super(ZMQVimIPythonApp, self).initialize(None)
-        JupyterConsoleApp.initialize(self) # XXX why do we call it again?
+        # JupyterConsoleApp.initialize(self) # XXX why do we call it again?
         self.out = out
 
     def start(self):
@@ -102,6 +105,7 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
             msg_type = sub_msg['header']['msg_type']
             parent = sub_msg['parent_header']
 
+            self.out.write(f"{sub_msg}")  # DEBUG
             if True: # check if from here
                 if msg_type == 'status':
                     self._execution_state = sub_msg['content']['execution_state']
