@@ -23,7 +23,7 @@ class Main:
 
     @neovim.function('IPyRun')
     def run_cell(self, args):
-        line = self.vim.eval('getline(".")')
+        line = self.vim.current.line
         self.ipy.run_cell(line)
 
     def write(self, text):
