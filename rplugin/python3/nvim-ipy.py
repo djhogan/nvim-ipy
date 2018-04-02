@@ -10,11 +10,11 @@ from jupyter_client.threaded import ThreadedKernelClient
 class Main:
     def __init__(self, vim):
         self.vim = vim
-    
+
     @neovim.function('IPyStart', sync=False)
     def launch_instance(self, args):
         self.ipy = ZMQVimIPythonApp()
-        self.ipy.initialize()
+        self.ipy.initialize(self)
         self.ipy.start()
 
     @neovim.function('IPyRun')
@@ -22,15 +22,19 @@ class Main:
         line = self.vim.eval('getline(".")')
         self.ipy.run_cell(line)
 
+    def write(self, text):
+        self.vim.command(f'new | call setline(".", "{text}")')
+
+
 class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
     name = 'jupyter-vim'
     version = '1.0'
     # kernel_client_class = ThreadedKernelClient
 
-    def initialize(self, argv=None):
+    def initialize(self, out):
         super(ZMQVimIPythonApp, self).initialize(argv)
-        JupyterConsoleApp.initialize(self)
-        print("Initialize called..")
+        JupyterConsoleApp.initialize(self) # XXX why do we call it again?
+        self.out = out
 
     def start(self):
         super(ZMQVimIPythonApp, self).start()
@@ -102,30 +106,27 @@ class ZMQVimIPythonApp(JupyterApp, JupyterConsoleApp):
                 if msg_type == 'status':
                     self._execution_state = sub_msg['content']['execution_state']
                 elif msg_type == 'stream':
-                    sys.stdout.write(sub_msg['content']['text'])
+                    self.out.write(sub_msg['content']['text'])
                 elif msg_type == 'display_data':
-                    sys.stdout.write(sub_msg['content']['data']['text/plain'])
+                    self.out.write(sub_msg['content']['data']['text/plain'])
                     # TODO handle other data types.
                 elif msg_type == 'data_pub':
                     pass # TODO raw data
                 elif msg_type == 'execute_result':
-                    sys.stdout.write(sub_msg['content']['data']['text/plain'])
+                    self.out.write(sub_msg['content']['data']['text/plain'])
                     # TODO
                 elif msg_type == 'execute_input':
-                    sys.stdout.write(sub_msg['content']['code'] + '\n')
+                    self.out.write(sub_msg['content']['code'] + '\n')
                 elif msg_type == 'clear_output':
                     pass # TODO used for clearing output. Useful for animations.
                 elif msg_type == 'error':
-                    sys.stdout.write(sub_msg)
+                    self.out.write(sub_msg)
 
     def handle_stdin(self, msg_id=''):
         raise NotImplementedError()
 
     def handle_control(self, msg_id=''):
         raise NotImplementedError()
-
-    def handle_text_output(text):
-        self.vim.command(f'new | call setline(".", "{text}")')
 
 if __name__ == '__main__':
     ZMQVimIPythonApp.launch_instance()
